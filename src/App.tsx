@@ -4,9 +4,21 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+
 // Layouts
 import MobileLayout from "@/components/layouts/MobileLayout";
 import AdminLayout from "@/components/layouts/AdminLayout";
+
+// Auth pages
+import LoginPage from "@/pages/auth/LoginPage";
+import SignupPage from "@/pages/auth/SignupPage";
+import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/auth/ResetPasswordPage";
+
+// Onboarding
+import OnboardingPage from "@/pages/onboarding/OnboardingPage";
 
 // Mobile pages
 import DiscoverPage from "@/pages/discover/DiscoverPage";
@@ -29,32 +41,43 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          {/* Redirect root to discover */}
-          <Route path="/" element={<Navigate to="/discover" replace />} />
+        <AuthProvider>
+          <Routes>
+            {/* Redirect root to discover */}
+            <Route path="/" element={<Navigate to="/discover" replace />} />
 
-          {/* Mobile App Routes */}
-          <Route element={<MobileLayout />}>
-            <Route path="/discover" element={<DiscoverPage />} />
-            <Route path="/matches" element={<MatchesPage />} />
-            <Route path="/messages" element={<MessagesPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Route>
+            {/* Auth routes (public) */}
+            <Route path="/auth/login" element={<LoginPage />} />
+            <Route path="/auth/signup" element={<SignupPage />} />
+            <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Admin Console Routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<AdminUsersPage />} />
-            <Route path="moderation" element={<AdminPlaceholder />} />
-            <Route path="analytics" element={<AdminPlaceholder />} />
-            <Route path="features" element={<AdminPlaceholder />} />
-            <Route path="subscriptions" element={<AdminPlaceholder />} />
-            <Route path="content" element={<AdminPlaceholder />} />
-            <Route path="settings" element={<AdminPlaceholder />} />
-          </Route>
+            {/* Onboarding (requires auth but not completed profile) */}
+            <Route path="/onboarding" element={<OnboardingPage />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* Mobile App Routes (protected) */}
+            <Route element={<ProtectedRoute><MobileLayout /></ProtectedRoute>}>
+              <Route path="/discover" element={<DiscoverPage />} />
+              <Route path="/matches" element={<MatchesPage />} />
+              <Route path="/messages" element={<MessagesPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
+
+            {/* Admin Console Routes (protected) */}
+            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsersPage />} />
+              <Route path="moderation" element={<AdminPlaceholder />} />
+              <Route path="analytics" element={<AdminPlaceholder />} />
+              <Route path="features" element={<AdminPlaceholder />} />
+              <Route path="subscriptions" element={<AdminPlaceholder />} />
+              <Route path="content" element={<AdminPlaceholder />} />
+              <Route path="settings" element={<AdminPlaceholder />} />
+            </Route>
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
