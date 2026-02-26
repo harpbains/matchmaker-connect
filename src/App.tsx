@@ -6,12 +6,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { AdminRoute } from "@/components/auth/AdminRoute";
 
 // Layouts
 import MobileLayout from "@/components/layouts/MobileLayout";
 import AdminLayout from "@/components/layouts/AdminLayout";
 
-// Auth pages
+// App Auth pages
 import LoginPage from "@/pages/auth/LoginPage";
 import SignupPage from "@/pages/auth/SignupPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
@@ -27,6 +28,7 @@ import MessagesPage from "@/pages/messages/MessagesPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 
 // Admin pages
+import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsersPage from "@/pages/admin/AdminUsersPage";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
@@ -46,16 +48,16 @@ const App = () => (
             {/* Redirect root to discover */}
             <Route path="/" element={<Navigate to="/discover" replace />} />
 
-            {/* Auth routes (public) */}
+            {/* App Auth routes (public) */}
             <Route path="/auth/login" element={<LoginPage />} />
             <Route path="/auth/signup" element={<SignupPage />} />
             <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
-            {/* Onboarding (requires auth but not completed profile) */}
+            {/* Onboarding */}
             <Route path="/onboarding" element={<OnboardingPage />} />
 
-            {/* Mobile App Routes (protected) */}
+            {/* Mobile App Routes (protected — requires auth + completed onboarding) */}
             <Route element={<ProtectedRoute><MobileLayout /></ProtectedRoute>}>
               <Route path="/discover" element={<DiscoverPage />} />
               <Route path="/matches" element={<MatchesPage />} />
@@ -63,8 +65,9 @@ const App = () => (
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
 
-            {/* Admin Console Routes (protected) */}
-            <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+            {/* Admin Console — separate login + role-gated */}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="moderation" element={<AdminPlaceholder />} />
