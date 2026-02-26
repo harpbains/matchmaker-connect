@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
+import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 
 // Layouts
 import MobileLayout from "@/components/layouts/MobileLayout";
@@ -66,8 +67,8 @@ const App = () => (
             </Route>
 
             {/* Admin Console — separate login + role-gated */}
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+            <Route path="/admin/login" element={<AdminAuthProvider><AdminLoginPage /></AdminAuthProvider>} />
+            <Route path="/admin" element={<AdminAuthProvider><AdminRoute><AdminLayout /></AdminRoute></AdminAuthProvider>}>
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="moderation" element={<AdminPlaceholder />} />

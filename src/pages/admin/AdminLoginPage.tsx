@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { Eye, EyeOff, Shield } from "lucide-react";
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
+  const { signIn } = useAdminAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,32 +21,10 @@ export default function AdminLoginPage() {
     if (!email.trim() || !password) return;
 
     setLoading(true);
+    const { error } = await signIn(email.trim(), password);
 
-    // Sign in
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-
-    if (authError) {
-      toast({ title: "Login failed", description: authError.message, variant: "destructive" });
-      setLoading(false);
-      return;
-    }
-
-    // Check admin role server-side via has_role function
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: authData.user.id,
-      _role: "admin",
-    });
-
-    if (roleError || !isAdmin) {
-      await supabase.auth.signOut();
-      toast({
-        title: "Access denied",
-        description: "You do not have admin privileges.",
-        variant: "destructive",
-      });
+    if (error) {
+      toast({ title: "Login failed", description: error, variant: "destructive" });
       setLoading(false);
       return;
     }
@@ -56,7 +35,6 @@ export default function AdminLoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
-        {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="h-14 w-14 rounded-2xl bg-secondary flex items-center justify-center mb-3 border border-border">
             <Shield className="h-7 w-7 text-primary" />
