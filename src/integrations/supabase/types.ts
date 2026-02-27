@@ -154,6 +154,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_get_dashboard_stats: { Args: never; Returns: Json }
+      admin_list_profiles: {
+        Args: {
+          p_gender?: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_verified?: boolean
+        }
+        Returns: Json
+      }
+      admin_toggle_verify: { Args: { p_user_id: string }; Returns: boolean }
       create_admin_user: {
         Args: {
           p_display_name: string

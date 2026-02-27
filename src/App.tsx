@@ -32,6 +32,9 @@ import ProfilePage from "@/pages/profile/ProfilePage";
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsersPage from "@/pages/admin/AdminUsersPage";
+import AdminModerationPage from "@/pages/admin/AdminModerationPage";
+import AdminAnalyticsPage from "@/pages/admin/AdminAnalyticsPage";
+import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
 
 import NotFound from "./pages/NotFound";
@@ -71,12 +74,12 @@ const App = () => (
             <Route path="/admin" element={<AdminAuthProvider><AdminRoute><AdminLayout /></AdminRoute></AdminAuthProvider>}>
               <Route index element={<AdminDashboard />} />
               <Route path="users" element={<AdminUsersPage />} />
-              <Route path="moderation" element={<AdminPlaceholder />} />
-              <Route path="analytics" element={<AdminPlaceholder />} />
+              <Route path="moderation" element={<AdminModerationPage />} />
+              <Route path="analytics" element={<AdminAnalyticsPage />} />
               <Route path="features" element={<AdminPlaceholder />} />
               <Route path="subscriptions" element={<AdminPlaceholder />} />
               <Route path="content" element={<AdminPlaceholder />} />
-              <Route path="settings" element={<AdminPlaceholder />} />
+              <Route path="settings" element={<AdminSettingsPage />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

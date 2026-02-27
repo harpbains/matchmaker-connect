@@ -10,8 +10,8 @@ import {
   LogOut,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import {
   Sidebar,
   SidebarContent,
@@ -43,11 +43,11 @@ const configItems = [
 export function AdminSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
   const navigate = useNavigate();
+  const { admin, signOut } = useAdminAuth();
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    signOut();
     navigate("/admin/login");
   };
 
@@ -114,6 +114,12 @@ export function AdminSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4 space-y-2">
+        {!collapsed && admin && (
+          <div className="px-3 py-2 rounded-lg bg-secondary/50">
+            <p className="text-xs font-medium text-foreground truncate">{admin.displayName}</p>
+            <p className="text-[10px] text-muted-foreground truncate">{admin.email}</p>
+          </div>
+        )}
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors"
