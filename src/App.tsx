@@ -24,8 +24,10 @@ import OnboardingPage from "@/pages/onboarding/OnboardingPage";
 
 // Mobile pages
 import DiscoverPage from "@/pages/discover/DiscoverPage";
+import ProfileDetailPage from "@/pages/discover/ProfileDetailPage";
 import MatchesPage from "@/pages/matches/MatchesPage";
 import MessagesPage from "@/pages/messages/MessagesPage";
+import ChatPage from "@/pages/messages/ChatPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 
 // Admin pages
@@ -64,8 +66,10 @@ const App = () => (
             {/* Mobile App Routes (protected — requires auth + completed onboarding) */}
             <Route element={<ProtectedRoute><MobileLayout /></ProtectedRoute>}>
               <Route path="/discover" element={<DiscoverPage />} />
+              <Route path="/profile/:id" element={<ProfileDetailPage />} />
               <Route path="/matches" element={<MatchesPage />} />
               <Route path="/messages" element={<MessagesPage />} />
+              <Route path="/messages/:id" element={<ChatPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
 

@@ -1,16 +1,19 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
-
-const conversations = [
-  { name: "Priya M.", lastMessage: "That sounds amazing! Let's plan it 🎉", time: "2m", unread: 2, online: true },
-  { name: "Meera S.", lastMessage: "I love that restaurant too!", time: "1h", unread: 0, online: true },
-  { name: "Kavya R.", lastMessage: "Thanks for the recommendation", time: "3h", unread: 1, online: false },
-  { name: "Anita K.", lastMessage: "See you this weekend!", time: "1d", unread: 0, online: false },
-  { name: "Divya P.", lastMessage: "How's London treating you?", time: "2d", unread: 0, online: false },
-];
+import { useNavigate } from "react-router-dom";
+import { mockConversations } from "@/data/mockProfiles";
+import { useState } from "react";
 
 export default function MessagesPage() {
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+
+  const filtered = mockConversations.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className="px-4 pt-4">
       <h1 className="text-xl font-display font-bold text-foreground mb-4">Messages</h1>
@@ -21,15 +24,18 @@ export default function MessagesPage() {
         <Input
           placeholder="Search conversations..."
           className="pl-10 bg-secondary border-border"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
       {/* Conversation list */}
       <div className="flex flex-col gap-1">
-        {conversations.map((conv) => (
-          <div
-            key={conv.name}
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer"
+        {filtered.map((conv) => (
+          <button
+            key={conv.id}
+            onClick={() => navigate(`/messages/${conv.id}`)}
+            className="flex items-center gap-3 p-3 rounded-xl hover:bg-secondary/50 transition-colors cursor-pointer w-full text-left"
           >
             <div className="relative">
               <Avatar className="h-12 w-12">
@@ -55,8 +61,14 @@ export default function MessagesPage() {
                 <span className="text-[10px] font-bold text-primary-foreground">{conv.unread}</span>
               </div>
             )}
-          </div>
+          </button>
         ))}
+
+        {filtered.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-muted-foreground text-sm">No conversations found</p>
+          </div>
+        )}
       </div>
     </div>
   );

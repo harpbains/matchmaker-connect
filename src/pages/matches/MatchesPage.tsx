@@ -1,20 +1,17 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Heart, Star, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { mockMatches } from "@/data/mockProfiles";
 
-const matches = [
-  { name: "Priya M.", age: 27, location: "NYC", verified: true, isNew: true },
-  { name: "Kavya R.", age: 24, location: "Toronto", verified: false, isNew: true },
-  { name: "Meera S.", age: 29, location: "London", verified: true, isNew: false },
-  { name: "Anita K.", age: 26, location: "Sydney", verified: true, isNew: false },
-  { name: "Divya P.", age: 25, location: "Berlin", verified: false, isNew: false },
-  { name: "Riya T.", age: 28, location: "Dubai", verified: true, isNew: false },
-];
-
-function MatchCard({ match }: { match: typeof matches[0] }) {
+function MatchCard({ match, onClick }: { match: typeof mockMatches[0]; onClick: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors cursor-pointer">
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center gap-2 p-3 rounded-xl bg-card border border-border hover:border-primary/30 transition-colors cursor-pointer w-full"
+    >
       <div className="relative">
         <Avatar className="h-20 w-20">
           <AvatarFallback className="bg-secondary text-foreground font-display font-semibold text-lg">
@@ -24,17 +21,25 @@ function MatchCard({ match }: { match: typeof matches[0] }) {
         {match.verified && (
           <CheckCircle className="absolute -bottom-0.5 -right-0.5 h-5 w-5 text-primary fill-primary stroke-card" />
         )}
+        {match.isNew && (
+          <div className="absolute -top-1 -left-1 h-4 w-4 rounded-full bg-primary animate-pulse" />
+        )}
       </div>
       <div className="text-center">
-        <p className="text-sm font-medium text-foreground">{match.name}, {match.age}</p>
-        <p className="text-xs text-muted-foreground">{match.location}</p>
+        <p className="text-sm font-medium text-foreground">{match.name.split(" ")[0]}, {match.age}</p>
+        <p className="text-xs text-muted-foreground">{match.location.split(",")[0]}</p>
       </div>
-    </div>
+      <Badge variant="secondary" className="text-[10px] bg-secondary/60">
+        {match.compatibility}%
+      </Badge>
+    </button>
   );
 }
 
 export default function MatchesPage() {
-  const newLikes = matches.filter((m) => m.isNew);
+  const navigate = useNavigate();
+  const newLikes = mockMatches.filter((m) => m.isNew);
+  const superLikes = mockMatches.filter((m) => m.isSuperLike);
 
   return (
     <div className="px-4 pt-4">
@@ -60,25 +65,40 @@ export default function MatchesPage() {
 
         <TabsContent value="all" className="mt-4">
           <div className="grid grid-cols-3 gap-3">
-            {matches.map((match) => (
-              <MatchCard key={match.name} match={match} />
+            {mockMatches.map((match) => (
+              <MatchCard key={match.id} match={match} onClick={() => navigate(`/profile/${match.id}`)} />
             ))}
           </div>
         </TabsContent>
 
         <TabsContent value="new" className="mt-4">
-          <div className="grid grid-cols-3 gap-3">
-            {newLikes.map((match) => (
-              <MatchCard key={match.name} match={match} />
-            ))}
-          </div>
+          {newLikes.length > 0 ? (
+            <div className="grid grid-cols-3 gap-3">
+              {newLikes.map((match) => (
+                <MatchCard key={match.id} match={match} onClick={() => navigate(`/profile/${match.id}`)} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Heart className="h-10 w-10 text-muted-foreground mb-3" />
+              <p className="text-muted-foreground text-sm">No new likes yet</p>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="super" className="mt-4">
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Star className="h-10 w-10 text-warning mb-3" />
-            <p className="text-muted-foreground text-sm">No Super Likes yet</p>
-          </div>
+          {superLikes.length > 0 ? (
+            <div className="grid grid-cols-3 gap-3">
+              {superLikes.map((match) => (
+                <MatchCard key={match.id} match={match} onClick={() => navigate(`/profile/${match.id}`)} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Star className="h-10 w-10 text-warning mb-3" />
+              <p className="text-muted-foreground text-sm">No Super Likes yet</p>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

@@ -2,6 +2,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   User,
   Mail,
@@ -14,19 +17,30 @@ import {
   ChevronRight,
   Settings,
   Crown,
+  Camera,
 } from "lucide-react";
+import { useState } from "react";
 
 const menuItems = [
-  { icon: User, label: "Personal Information", href: "#" },
-  { icon: Mail, label: "Email & Phone", href: "#" },
-  { icon: Bell, label: "Notifications", href: "#" },
-  { icon: Compass, label: "Discovery Settings", href: "#" },
-  { icon: Globe, label: "Language & Region", href: "#" },
-  { icon: ShieldCheck, label: "Privacy Center", href: "#" },
-  { icon: Ban, label: "Blocked Users", href: "#" },
+  { icon: User, label: "Personal Information" },
+  { icon: Mail, label: "Email & Phone" },
+  { icon: Bell, label: "Notifications" },
+  { icon: Compass, label: "Discovery Settings" },
+  { icon: Globe, label: "Language & Region" },
+  { icon: ShieldCheck, label: "Privacy Center" },
+  { icon: Ban, label: "Blocked Users" },
 ];
 
 export default function ProfilePage() {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const [matrimonyMode, setMatrimonyMode] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/auth/login");
+  };
+
   return (
     <div className="px-4 pt-4 pb-8">
       {/* Header */}
@@ -39,13 +53,21 @@ export default function ProfilePage() {
 
       {/* Profile card */}
       <div className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border mb-4">
-        <Avatar className="h-16 w-16">
-          <AvatarFallback className="bg-primary/20 text-primary font-display font-bold text-xl">
-            R
-          </AvatarFallback>
-        </Avatar>
+        <div className="relative">
+          <Avatar className="h-16 w-16">
+            <AvatarFallback className="bg-primary/20 text-primary font-display font-bold text-xl">
+              R
+            </AvatarFallback>
+          </Avatar>
+          <button className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
+            <Camera className="h-3 w-3 text-primary-foreground" />
+          </button>
+        </div>
         <div className="flex-1">
-          <h2 className="font-display font-semibold text-foreground">Rahul K.</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-display font-semibold text-foreground">Rahul K.</h2>
+            <Badge variant="outline" className="border-primary/30 text-primary text-[10px]">Free</Badge>
+          </div>
           <p className="text-xs text-muted-foreground">Amsterdam, NL</p>
           <Button
             variant="outline"
@@ -58,7 +80,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Subscription CTA */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 mb-4 flex items-center gap-3">
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 mb-4 flex items-center gap-3 cursor-pointer hover:border-primary/40 transition-colors">
         <Crown className="h-8 w-8 text-primary" />
         <div className="flex-1">
           <p className="text-sm font-medium text-foreground">Upgrade to Pro</p>
@@ -73,7 +95,7 @@ export default function ProfilePage() {
           <p className="text-sm font-medium text-foreground">Matrimony Mode</p>
           <p className="text-xs text-muted-foreground">Show serious intent profiles</p>
         </div>
-        <Switch />
+        <Switch checked={matrimonyMode} onCheckedChange={setMatrimonyMode} />
       </div>
 
       <Separator className="my-2" />
@@ -94,7 +116,10 @@ export default function ProfilePage() {
 
       <Separator className="my-2" />
 
-      <button className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-destructive/10 transition-colors w-full text-left mt-1">
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-destructive/10 transition-colors w-full text-left mt-1"
+      >
         <LogOut className="h-4 w-4 text-destructive" />
         <span className="text-sm text-destructive">Log Out</span>
       </button>
