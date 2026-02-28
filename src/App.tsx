@@ -39,7 +39,9 @@ import AdminUsersPage from "@/pages/admin/AdminUsersPage";
 import AdminModerationPage from "@/pages/admin/AdminModerationPage";
 import AdminAnalyticsPage from "@/pages/admin/AdminAnalyticsPage";
 import AdminSettingsPage from "@/pages/admin/AdminSettingsPage";
-import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
+import AdminFeaturesPage from "@/pages/admin/AdminFeaturesPage";
+import AdminSubscriptionsPage from "@/pages/admin/AdminSubscriptionsPage";
+import AdminContentPage from "@/pages/admin/AdminContentPage";
 
 import NotFound from "./pages/NotFound";
 
@@ -84,9 +86,9 @@ const App = () => (
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="moderation" element={<AdminModerationPage />} />
               <Route path="analytics" element={<AdminAnalyticsPage />} />
-              <Route path="features" element={<AdminPlaceholder />} />
-              <Route path="subscriptions" element={<AdminPlaceholder />} />
-              <Route path="content" element={<AdminPlaceholder />} />
+              <Route path="features" element={<AdminFeaturesPage />} />
+              <Route path="subscriptions" element={<AdminSubscriptionsPage />} />
+              <Route path="content" element={<AdminContentPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
             </Route>
 
