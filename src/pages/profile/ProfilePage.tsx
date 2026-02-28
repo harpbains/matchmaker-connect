@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 import {
   User,
   Mail,
@@ -33,8 +34,11 @@ const menuItems = [
 
 export default function ProfilePage() {
   const { signOut } = useAuth();
+  const { tier } = useSubscription();
   const navigate = useNavigate();
   const [matrimonyMode, setMatrimonyMode] = useState(false);
+
+  const tierLabel = tier === "free" ? "Free" : tier === "active" ? "Active" : "Pro";
 
   const handleLogout = async () => {
     await signOut();
@@ -66,7 +70,7 @@ export default function ProfilePage() {
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h2 className="font-display font-semibold text-foreground">Rahul K.</h2>
-            <Badge variant="outline" className="border-primary/30 text-primary text-[10px]">Free</Badge>
+            <Badge variant="outline" className="border-primary/30 text-primary text-[10px]">{tierLabel}</Badge>
           </div>
           <p className="text-xs text-muted-foreground">Amsterdam, NL</p>
           <Button
@@ -80,11 +84,18 @@ export default function ProfilePage() {
       </div>
 
       {/* Subscription CTA */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 mb-4 flex items-center gap-3 cursor-pointer hover:border-primary/40 transition-colors">
+      <div
+        className="p-4 rounded-2xl bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 mb-4 flex items-center gap-3 cursor-pointer hover:border-primary/40 transition-colors"
+        onClick={() => navigate("/subscription")}
+      >
         <Crown className="h-8 w-8 text-primary" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-foreground">Upgrade to Pro</p>
-          <p className="text-xs text-muted-foreground">Unlimited swipes, boosts & more</p>
+          <p className="text-sm font-medium text-foreground">
+            {tier === "pro" ? "Pro Member" : "Upgrade to Pro"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {tier === "pro" ? "You have all features unlocked" : "Unlimited swipes, boosts & more"}
+          </p>
         </div>
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
       </div>
