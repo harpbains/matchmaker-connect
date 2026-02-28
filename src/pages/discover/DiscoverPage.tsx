@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { mockProfiles } from "@/data/mockProfiles";
 import FiltersModal from "@/components/discover/FiltersModal";
 import MatchModal from "@/components/discover/MatchModal";
+import DailyRewardBanner from "@/components/subscription/DailyRewardBanner";
+import SwipeLimitBanner from "@/components/subscription/SwipeLimitBanner";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 import { useToast } from "@/hooks/use-toast";
 
 const onlineUsers = mockProfiles.filter((p) => p.online);
@@ -22,6 +25,7 @@ export default function DiscoverPage() {
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | "up" | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { useSwipe, useSuperLike } = useSubscription();
 
   const currentProfile = mockProfiles[currentIndex % mockProfiles.length];
 
@@ -31,8 +35,11 @@ export default function DiscoverPage() {
   }, []);
 
   const handleLike = () => {
+    if (!useSwipe()) {
+      toast({ title: "No swipes left!", description: "Upgrade for more daily swipes", variant: "destructive" });
+      return;
+    }
     setSwipeDirection("right");
-    // 30% chance of match for demo
     if (Math.random() < 0.3) {
       setMatchedProfile(currentProfile);
       setTimeout(() => setMatchModalOpen(true), 300);
@@ -43,11 +50,19 @@ export default function DiscoverPage() {
   };
 
   const handlePass = () => {
+    if (!useSwipe()) {
+      toast({ title: "No swipes left!", description: "Upgrade for more daily swipes", variant: "destructive" });
+      return;
+    }
     setSwipeDirection("left");
     setTimeout(nextProfile, 400);
   };
 
   const handleSuperLike = () => {
+    if (!useSuperLike()) {
+      toast({ title: "No super likes left!", description: "Upgrade for more", variant: "destructive" });
+      return;
+    }
     setSwipeDirection("up");
     toast({ title: "⭐ Super Liked!", description: `You super liked ${currentProfile.name}` });
     setTimeout(nextProfile, 400);
@@ -77,6 +92,10 @@ export default function DiscoverPage() {
           </Button>
         </div>
       </div>
+
+      {/* Daily Reward & Swipe Limit */}
+      <DailyRewardBanner />
+      <SwipeLimitBanner />
 
       {/* Online Now */}
       <div className="px-4 py-2">

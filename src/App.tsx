@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AdminRoute } from "@/components/auth/AdminRoute";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
@@ -29,6 +30,7 @@ import MatchesPage from "@/pages/matches/MatchesPage";
 import MessagesPage from "@/pages/messages/MessagesPage";
 import ChatPage from "@/pages/messages/ChatPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
+import SubscriptionPage from "@/pages/subscription/SubscriptionPage";
 
 // Admin pages
 import AdminLoginPage from "@/pages/admin/AdminLoginPage";
@@ -50,6 +52,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <SubscriptionProvider>
           <Routes>
             {/* Redirect root to discover */}
             <Route path="/" element={<Navigate to="/discover" replace />} />
@@ -71,6 +74,7 @@ const App = () => (
               <Route path="/messages" element={<MessagesPage />} />
               <Route path="/messages/:id" element={<ChatPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/subscription" element={<SubscriptionPage />} />
             </Route>
 
             {/* Admin Console — separate login + role-gated */}
@@ -88,6 +92,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </SubscriptionProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
