@@ -19,17 +19,18 @@ import {
   Settings,
   Crown,
   Camera,
+  Plane,
 } from "lucide-react";
 import { useState } from "react";
 
 const menuItems = [
-  { icon: User, label: "Personal Information" },
-  { icon: Mail, label: "Email & Phone" },
-  { icon: Bell, label: "Notifications" },
-  { icon: Compass, label: "Discovery Settings" },
-  { icon: Globe, label: "Language & Region" },
-  { icon: ShieldCheck, label: "Privacy Center" },
-  { icon: Ban, label: "Blocked Users" },
+  { icon: User, label: "Personal Information", route: "" },
+  { icon: Mail, label: "Email & Phone", route: "" },
+  { icon: Bell, label: "Notifications", route: "/notifications" },
+  { icon: ShieldCheck, label: "Get Verified", route: "/verification" },
+  { icon: Compass, label: "Discovery Settings", route: "" },
+  { icon: Globe, label: "Language & Region", route: "" },
+  { icon: Ban, label: "Blocked Users", route: "/blocked-users" },
 ];
 
 export default function ProfilePage() {
@@ -39,6 +40,7 @@ export default function ProfilePage() {
   const [matrimonyMode, setMatrimonyMode] = useState(false);
 
   const tierLabel = tier === "free" ? "Free" : tier === "active" ? "Active" : "Pro";
+  const isPremium = tier === "active" || tier === "pro";
 
   const handleLogout = async () => {
     await signOut();
@@ -50,7 +52,12 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-display font-bold text-foreground">Profile</h1>
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-muted-foreground"
+          onClick={() => navigate("/account-settings")}
+        >
           <Settings className="h-5 w-5" />
         </Button>
       </div>
@@ -100,6 +107,23 @@ export default function ProfilePage() {
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
       </div>
 
+      {/* Travel Mode Quick Access (premium) */}
+      {isPremium && (
+        <div
+          className="p-3 rounded-2xl bg-card border border-border mb-4 flex items-center gap-3 cursor-pointer hover:bg-secondary/30 transition-colors"
+          onClick={() => navigate("/account-settings")}
+        >
+          <div className="h-9 w-9 rounded-xl bg-primary/20 flex items-center justify-center">
+            <Plane className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-foreground">Travel Mode</p>
+            <p className="text-xs text-muted-foreground">Discover in another city</p>
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </div>
+      )}
+
       {/* Matrimony mode toggle */}
       <div className="flex items-center justify-between p-4 rounded-2xl bg-card border border-border mb-4">
         <div>
@@ -117,6 +141,7 @@ export default function ProfilePage() {
           <button
             key={item.label}
             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-secondary/50 transition-colors w-full text-left"
+            onClick={() => item.route && navigate(item.route)}
           >
             <item.icon className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm text-foreground flex-1">{item.label}</span>
