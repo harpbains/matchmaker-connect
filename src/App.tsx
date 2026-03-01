@@ -30,6 +30,10 @@ import MatchesPage from "@/pages/matches/MatchesPage";
 import MessagesPage from "@/pages/messages/MessagesPage";
 import ChatPage from "@/pages/messages/ChatPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
+import VerificationPage from "@/pages/profile/VerificationPage";
+import NotificationsPage from "@/pages/profile/NotificationsPage";
+import AccountSettingsPage from "@/pages/profile/AccountSettingsPage";
+import BlockedUsersPage from "@/pages/profile/BlockedUsersPage";
 import SubscriptionPage from "@/pages/subscription/SubscriptionPage";
 
 // Admin pages
@@ -76,6 +80,10 @@ const App = () => (
               <Route path="/messages" element={<MessagesPage />} />
               <Route path="/messages/:id" element={<ChatPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/verification" element={<VerificationPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/account-settings" element={<AccountSettingsPage />} />
+              <Route path="/blocked-users" element={<BlockedUsersPage />} />
               <Route path="/subscription" element={<SubscriptionPage />} />
             </Route>
 
